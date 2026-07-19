@@ -1,308 +1,198 @@
-import React, { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import {
-  MicIcon,
-  Music2Icon,
-  HeadphonesIcon,
-  RadioIcon,
   CalendarIcon,
-  ClockIcon } from
-'lucide-react';
+  Clock3Icon,
+  HeadphonesIcon,
+  Mic2Icon,
+  Music2Icon,
+  RadioIcon,
+  ShieldCheckIcon,
+} from 'lucide-react';
+import { CheckoutButton } from './CheckoutButton';
+import { Reveal } from './Reveal';
+import { SectionIntro } from './SectionIntro';
+
+const services = [
+  {
+    id: 'studio_recording',
+    shortId: 'recording',
+    name: 'Vocal recording',
+    description: 'Professional vocal recording with top equipment.',
+    price: 'R300',
+    unit: 'per hour',
+    icon: Mic2Icon,
+  },
+  {
+    id: 'studio_mixing',
+    shortId: 'mixing',
+    name: 'Mixing',
+    description: 'Get your track sounding clean and balanced.',
+    price: 'R500',
+    unit: 'per track',
+    icon: HeadphonesIcon,
+  },
+  {
+    id: 'studio_mastering',
+    shortId: 'mastering',
+    name: 'Mastering',
+    description: 'Release-ready mastering for major platforms.',
+    price: 'R100',
+    unit: 'per song',
+    icon: Music2Icon,
+  },
+  {
+    id: 'studio_podcast',
+    shortId: 'podcast',
+    name: 'Podcast recording',
+    description: 'Record your podcast with professional audio.',
+    price: 'R300',
+    unit: 'per hour',
+    icon: RadioIcon,
+  },
+];
+
+type BookingForm = {
+  name: string;
+  email: string;
+  date: string;
+  time: string;
+};
+
 export function StudioBooking() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: '-100px'
-  });
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState(services[0].id);
+  const [form, setForm] = useState<BookingForm>({ name: '', email: '', date: '', time: '' });
+  const formRef = useRef<HTMLFormElement>(null);
+  const selectedService = services.find((service) => service.id === selectedId) ?? services[0];
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  const updateField = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+  };
+
   return (
-    <section id="studio" className="py-24 bg-bg relative">
-      <div className="absolute inset-0 bg-tribal-pattern" />
+    <section id="studio" className="signal-section section-pad" aria-labelledby="studio-heading">
+      <div className="page-shell">
+        <SectionIntro
+          headingId="studio-heading"
+          number="06"
+          eyebrow="Studio"
+          title="Book a session"
+          description="Professional recording, mixing, mastering and podcast services. Choose a service, tell us when you would like to work, then continue to the booking deposit."
+        />
 
-      <div
-        ref={ref}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40
-          }}
-          animate={
-          isInView ?
-          {
-            opacity: 1,
-            y: 0
-          } :
-          {}
-          }
-          transition={{
-            duration: 0.6
-          }}
-          className="text-center mb-16">
-          
-          <p className="text-orange font-medium text-sm tracking-[0.2em] uppercase mb-3">
-            Studio
-          </p>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">
-            BOOK A SESSION
-          </h2>
-          <p className="text-text-muted text-lg max-w-2xl mx-auto">
-            Professional recording, mixing, mastering, and podcast services.
-            Book your session and bring your music to life.
-          </p>
-        </motion.div>
+        <Reveal className="studio-layout">
+          <div className="studio-services" aria-label="Choose a studio service">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              const selected = service.id === selectedId;
+              return (
+                <button
+                  key={service.id}
+                  type="button"
+                  aria-pressed={selected}
+                  className={selected ? 'is-selected' : undefined}
+                  onClick={() => setSelectedId(service.id)}
+                >
+                  <span className="studio-services__index">{String(index + 1).padStart(2, '0')}</span>
+                  <Icon aria-hidden="true" />
+                  <span className="studio-services__copy">
+                    <strong>{service.name}</strong>
+                    <small>{service.description}</small>
+                  </span>
+                  <span className="studio-services__price">
+                    <strong>{service.price}</strong>
+                    <small>{service.unit}</small>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <motion.button
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.1,
-              duration: 0.5
-            }}
-            onClick={() => setSelectedService('recording')}
-            className={`text-left bg-surface-2 border rounded-xl p-6 transition-all duration-200 ${selectedService === 'recording' ? 'border-orange glow-orange' : 'border-border hover:border-orange/50'}`}>
-            
-            <div className="w-12 h-12 bg-orange/10 rounded-xl flex items-center justify-center mb-4">
-              <MicIcon className="w-6 h-6 text-orange" />
+          <form
+            ref={formRef}
+            className="booking-form"
+            onSubmit={(event: FormEvent<HTMLFormElement>) => event.preventDefault()}
+          >
+            <div className="booking-form__head">
+              <p className="console-label">SELECTED SERVICE</p>
+              <h3>{selectedService.name}</h3>
+              <span>{selectedService.price} {selectedService.unit}</span>
             </div>
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Vocal Recording
-            </h3>
-            <p className="text-text-dim text-sm mb-3">
-              Professional vocal recording with top equipment
-            </p>
-            <p className="font-heading text-2xl font-bold text-gold">
-              R300
-              <span className="text-sm text-text-dim font-body font-normal">
-                /hour
-              </span>
-            </p>
-          </motion.button>
 
-          <motion.button
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.2,
-              duration: 0.5
-            }}
-            onClick={() => setSelectedService('mixing')}
-            className={`text-left bg-surface-2 border rounded-xl p-6 transition-all duration-200 ${selectedService === 'mixing' ? 'border-magenta glow-magenta' : 'border-border hover:border-magenta/50'}`}>
-            
-            <div className="w-12 h-12 bg-magenta/10 rounded-xl flex items-center justify-center mb-4">
-              <HeadphonesIcon className="w-6 h-6 text-magenta" />
+            <div className="booking-summary">
+              <strong>Booking deposit / starting charge</strong>
+              <p>
+                This payment requests the session. Lukulu will confirm availability, final
+                scope and any remaining balance with you directly.
+              </p>
             </div>
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Mixing
-            </h3>
-            <p className="text-text-dim text-sm mb-3">
-              Get your track sounding clean and balanced
-            </p>
-            <p className="font-heading text-2xl font-bold text-gold">
-              R500
-              <span className="text-sm text-text-dim font-body font-normal">
-                /track
-              </span>
-            </p>
-          </motion.button>
 
-          <motion.button
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.3,
-              duration: 0.5
-            }}
-            onClick={() => setSelectedService('mastering')}
-            className={`text-left bg-surface-2 border rounded-xl p-6 transition-all duration-200 ${
-            selectedService === 'mastering' ?
-            'border-purple glow-magenta' // Using magenta glow for purple as it looks better
-            : 'border-border hover:border-purple/50'}`
-            }>
-            
-            <div className="w-12 h-12 bg-purple/10 rounded-xl flex items-center justify-center mb-4">
-              <Music2Icon className="w-6 h-6 text-purple" />
-            </div>
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Mastering
-            </h3>
-            <p className="text-text-dim text-sm mb-3">
-              Release-ready mastering for all platforms
-            </p>
-            <p className="font-heading text-2xl font-bold text-gold">
-              R100
-              <span className="text-sm text-text-dim font-body font-normal">
-                /song
-              </span>
-            </p>
-          </motion.button>
-
-          <motion.button
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.4,
-              duration: 0.5
-            }}
-            onClick={() => setSelectedService('podcast')}
-            className={`text-left bg-surface-2 border rounded-xl p-6 transition-all duration-200 ${selectedService === 'podcast' ? 'border-gold glow-gold' : 'border-border hover:border-gold/50'}`}>
-            
-            <div className="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mb-4">
-              <RadioIcon className="w-6 h-6 text-gold" />
-            </div>
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Podcast Recording
-            </h3>
-            <p className="text-text-dim text-sm mb-3">
-              Record your podcast with professional audio
-            </p>
-            <p className="font-heading text-2xl font-bold text-gold">
-              R300
-              <span className="text-sm text-text-dim font-body font-normal">
-                /hour
-              </span>
-            </p>
-          </motion.button>
-        </div>
-
-        {/* Booking Form */}
-        {selectedService &&
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          transition={{
-            duration: 0.4
-          }}
-          className="max-w-2xl mx-auto bg-surface border border-border rounded-xl p-8">
-          
-            <h3 className="font-heading text-2xl font-bold text-white mb-6">
-              Book Your Session
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label
-                htmlFor="booking-name"
-                className="block text-sm font-medium text-text-muted mb-1.5">
-                
-                  Your Name
-                </label>
+            <div className="form-grid">
+              <label>
+                <span>Your name</span>
                 <input
-                id="booking-name"
-                type="text"
-                placeholder="Enter your name"
-                className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-white placeholder-text-dim focus:border-orange focus:outline-none transition-colors" />
-              
-              </div>
-              <div>
-                <label
-                htmlFor="booking-email"
-                className="block text-sm font-medium text-text-muted mb-1.5">
-                
-                  Email
-                </label>
+                  type="text"
+                  name="name"
+                  autoComplete="name"
+                  value={form.name}
+                  onChange={updateField}
+                  required
+                  placeholder="Enter your name"
+                />
+              </label>
+              <label>
+                <span>Email address</span>
                 <input
-                id="booking-email"
-                type="email"
-                placeholder="your@email.com"
-                className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-white placeholder-text-dim focus:border-orange focus:outline-none transition-colors" />
-              
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label
-                  htmlFor="booking-date"
-                  className="block text-sm font-medium text-text-muted mb-1.5">
-                  
-                    <CalendarIcon className="w-3.5 h-3.5 inline mr-1 text-orange" />
-                    Preferred Date
-                  </label>
-                  <input
-                  id="booking-date"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={form.email}
+                  onChange={updateField}
+                  required
+                  placeholder="you@example.com"
+                />
+              </label>
+              <label>
+                <span><CalendarIcon aria-hidden="true" /> Preferred date</span>
+                <input
                   type="date"
-                  className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-white focus:border-orange focus:outline-none transition-colors" />
-                
-                </div>
-                <div>
-                  <label
-                  htmlFor="booking-time"
-                  className="block text-sm font-medium text-text-muted mb-1.5">
-                  
-                    <ClockIcon className="w-3.5 h-3.5 inline mr-1 text-orange" />
-                    Preferred Time
-                  </label>
-                  <select
-                  id="booking-time"
-                  className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-white focus:border-orange focus:outline-none transition-colors">
-                  
-                    <option value="">Select time</option>
-                    <option value="09:00">09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="12:00">12:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
-                  </select>
-                </div>
-              </div>
-              <button className="w-full py-3.5 bg-gradient-warm text-bg font-heading font-bold tracking-wide rounded-lg hover:opacity-90 transition-opacity mt-2">
-                BOOK SESSION — PAY DEPOSIT
-              </button>
+                  name="date"
+                  min={today}
+                  value={form.date}
+                  onChange={updateField}
+                  required
+                />
+              </label>
+              <label>
+                <span><Clock3Icon aria-hidden="true" /> Preferred time</span>
+                <select name="time" value={form.time} onChange={updateField} required>
+                  <option value="">Select a time</option>
+                  {['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'].map((time) => (
+                    <option key={time} value={time}>{time}</option>
+                  ))}
+                </select>
+              </label>
             </div>
-          </motion.div>
-        }
-      </div>
-    </section>);
 
+            <CheckoutButton
+              itemId={selectedService.id}
+              context={{
+                name: form.name,
+                email: form.email,
+                date: form.date,
+                time: form.time,
+                service: selectedService.shortId,
+              }}
+              className="button button-primary button-full"
+              onBeforeCheckout={() => formRef.current?.reportValidity() ?? false}
+              ariaLabel={`Pay the starting charge for ${selectedService.name}`}
+            >
+              Pay starting charge securely <ShieldCheckIcon aria-hidden="true" />
+            </CheckoutButton>
+            <p className="form-footnote">Remote mixing and mastering are available; ask the team after checkout.</p>
+          </form>
+        </Reveal>
+      </div>
+    </section>
+  );
 }

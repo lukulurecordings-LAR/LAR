@@ -1,332 +1,110 @@
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { PlayIcon, ShoppingCartIcon, TagIcon } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowUpRightIcon, FileAudioIcon, LockKeyholeIcon, ShoppingBagIcon } from 'lucide-react';
+import { CheckoutButton } from './CheckoutButton';
+import { Reveal } from './Reveal';
+import { SectionIntro } from './SectionIntro';
+
+type Licence = 'basic' | 'premium';
+
+const licences: Record<Licence, { name: string; price: string; terms: string }> = {
+  basic: {
+    name: 'Basic licence',
+    price: 'R300',
+    terms: 'MP3 file · up to 5,000 streams · non-exclusive',
+  },
+  premium: {
+    name: 'Premium licence',
+    price: 'R800',
+    terms: 'WAV + stems · up to 50,000 streams · non-exclusive',
+  },
+};
+
+const beats = [
+  { slug: 'indlela', name: 'Indlela', genre: 'Amapiano', bpm: '115 BPM' },
+  { slug: 'riot', name: 'Riot', genre: 'Afro-house / Hip Hop', bpm: '90 BPM' },
+  { slug: 'melo', name: 'Melo', genre: 'Afro House', bpm: '122 BPM' },
+  { slug: 'lukulu_tapes', name: 'Lukulu Tapes', genre: 'House', bpm: '120 BPM' },
+];
+
 export function BeatStore() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: '-100px'
-  });
+  const [licence, setLicence] = useState<Licence>('basic');
+  const selectedLicence = licences[licence];
+
   return (
-    <section id="beats" className="py-24 bg-surface relative">
-      <div className="absolute top-0 left-0 right-0 h-px divider-sunset" />
+    <section id="beats" className="signal-section section-pad section-paper" aria-labelledby="beats-heading">
+      <div className="page-shell">
+        <SectionIntro
+          headingId="beats-heading"
+          number="07"
+          eyebrow="Beat store"
+          title="Choose a beat. Know the rights."
+          description="In-house Amapiano, Hip Hop, Afro House and House production. Select one licence for the catalogue and see the exact price before checkout."
+        />
 
-      <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40
-          }}
-          animate={
-          isInView ?
-          {
-            opacity: 1,
-            y: 0
-          } :
-          {}
-          }
-          transition={{
-            duration: 0.6
-          }}
-          className="text-center mb-16">
-          
-          <p className="text-magenta font-medium text-sm tracking-[0.2em] uppercase mb-3">
-            Beat Store
-          </p>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">
-            GET FIRE BEATS
-          </h2>
-          <p className="text-text-muted text-lg max-w-2xl mx-auto">
-            Browse and buy exclusive beats. Amapiano, Hip Hop, Afro House, Trap
-            — all produced in-house.
-          </p>
-        </motion.div>
-
-        {/* License Tiers */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.1,
-              duration: 0.5
-            }}
-            className="bg-surface-2 border border-border rounded-xl p-6 text-center">
-            
-            <TagIcon className="w-8 h-8 text-text-dim mx-auto mb-3" />
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Basic Lease
-            </h3>
-            <p className="font-heading text-3xl font-bold text-gold mb-2">
-              R300
-            </p>
-            <p className="text-text-dim text-sm">
-              MP3 file, 5,000 streams, non-exclusive
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.2,
-              duration: 0.5
-            }}
-            className="bg-surface-2 border border-orange rounded-xl p-6 text-center glow-orange">
-            
-            <TagIcon className="w-8 h-8 text-orange mx-auto mb-3" />
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Premium Lease
-            </h3>
-            <p className="font-heading text-3xl font-bold text-orange mb-2">
-              R800
-            </p>
-            <p className="text-text-dim text-sm">
-              WAV + stems, 50,000 streams, non-exclusive
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              y: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.3,
-              duration: 0.5
-            }}
-            className="bg-surface-2 border border-border rounded-xl p-6 text-center">
-            
-            <TagIcon className="w-8 h-8 text-magenta mx-auto mb-3" />
-            <h3 className="font-heading text-lg font-semibold text-white mb-1">
-              Exclusive
-            </h3>
-            <p className="font-heading text-3xl font-bold text-magenta mb-2">
-              R3,500
-            </p>
-            <p className="text-text-dim text-sm">
-              Full ownership, WAV + stems + project file
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Beat Listings */}
-        <div className="space-y-3">
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -20
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              x: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.3,
-              duration: 0.4
-            }}
-            className="flex items-center gap-4 bg-surface-2 border border-border rounded-xl p-4 hover:border-orange/30 transition-colors group">
-            
-            <button
-              className="w-12 h-12 bg-orange/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-orange/20 transition-colors"
-              aria-label="Play Midnight Groove">
-              
-              <PlayIcon className="w-5 h-5 text-orange ml-0.5" />
-            </button>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-heading text-base font-semibold text-white truncate">
-                Indlela
-              </h4>
-              <p className="text-text-dim text-xs">
-                Amapiano • 115 BPM • Lukulu
-              </p>
+        <Reveal className="licence-console">
+          <div className="licence-selector" aria-label="Choose a beat licence">
+            {(Object.keys(licences) as Licence[]).map((key) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={licence === key}
+                className={licence === key ? 'is-selected' : undefined}
+                onClick={() => setLicence(key)}
+              >
+                <span>{licences[key].name}</span>
+                <strong>{licences[key].price}</strong>
+                <small>{licences[key].terms}</small>
+              </button>
+            ))}
+          </div>
+          <div className="exclusive-inquiry">
+            <LockKeyholeIcon aria-hidden="true" />
+            <div>
+              <strong>Need exclusive rights?</strong>
+              <p>Exclusive licences start at R3,500 and require an availability check before payment.</p>
             </div>
-            <span className="hidden sm:block px-3 py-1 bg-orange/10 text-orange text-xs font-medium rounded-full">
-              Amapiano
-            </span>
-            <span className="font-heading text-lg font-bold text-gold">
-              R300
-            </span>
-            <button
-              className="p-2 text-text-dim hover:text-orange transition-colors"
-              aria-label="Add to cart">
-              
-              <ShoppingCartIcon className="w-5 h-5" />
-            </button>
-          </motion.div>
+            <a href="mailto:lukulurecordings@gmail.com?subject=Exclusive%20beat%20availability%20inquiry">
+              Check availability <ArrowUpRightIcon aria-hidden="true" />
+            </a>
+          </div>
+        </Reveal>
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -20
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              x: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.4,
-              duration: 0.4
-            }}
-            className="flex items-center gap-4 bg-surface-2 border border-border rounded-xl p-4 hover:border-magenta/30 transition-colors group">
-            
-            <button
-              className="w-12 h-12 bg-magenta/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-magenta/20 transition-colors"
-              aria-label="Play Street Anthem">
-              
-              <PlayIcon className="w-5 h-5 text-magenta ml-0.5" />
-            </button>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-heading text-base font-semibold text-white truncate">
-                Riot
-              </h4>
-              <p className="text-text-dim text-xs">
-                Afro house Hip Hop • 90 BPM • Lukulu
-              </p>
-            </div>
-            <span className="hidden sm:block px-3 py-1 bg-magenta/10 text-magenta text-xs font-medium rounded-full">
-              Afro house Hip Hop
-            </span>
-            <span className="font-heading text-lg font-bold text-gold">
-              R300
-            </span>
-            <button
-              className="p-2 text-text-dim hover:text-magenta transition-colors"
-              aria-label="Add to cart">
-              
-              <ShoppingCartIcon className="w-5 h-5" />
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -20
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              x: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.5,
-              duration: 0.4
-            }}
-            className="flex items-center gap-4 bg-surface-2 border border-border rounded-xl p-4 hover:border-purple/30 transition-colors group">
-            
-            <button
-              className="w-12 h-12 bg-purple/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-purple/20 transition-colors"
-              aria-label="Play Sunset Vibes">
-              
-              <PlayIcon className="w-5 h-5 text-purple ml-0.5" />
-            </button>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-heading text-base font-semibold text-white truncate">
-                Melo
-              </h4>
-              <p className="text-text-dim text-xs">
-                Afro House • 122 BPM • Lukulu
-              </p>
-            </div>
-            <span className="hidden sm:block px-3 py-1 bg-purple/10 text-purple text-xs font-medium rounded-full">
-              Afro House
-            </span>
-            <span className="font-heading text-lg font-bold text-gold">
-              R300
-            </span>
-            <button
-              className="p-2 text-text-dim hover:text-purple transition-colors"
-              aria-label="Add to cart">
-              
-              <ShoppingCartIcon className="w-5 h-5" />
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -20
-            }}
-            animate={
-            isInView ?
-            {
-              opacity: 1,
-              x: 0
-            } :
-            {}
-            }
-            transition={{
-              delay: 0.6,
-              duration: 0.4
-            }}
-            className="flex items-center gap-4 bg-surface-2 border border-border rounded-xl p-4 hover:border-red-500/30 transition-colors group">
-            
-            <button
-              className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-red-500/20 transition-colors"
-              aria-label="Play Dark Mode">
-              
-              <PlayIcon className="w-5 h-5 text-red-500 ml-0.5" />
-            </button>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-heading text-base font-semibold text-white truncate">
-                Lukulu Tapes
-              </h4>
-              <p className="text-text-dim text-xs">House • 120 BPM • Lukulu</p>
-            </div>
-            <span className="hidden sm:block px-3 py-1 bg-red-500/10 text-red-500 text-xs font-medium rounded-full">
-              House
-            </span>
-            <span className="font-heading text-lg font-bold text-gold">
-              R300
-            </span>
-            <button
-              className="p-2 text-text-dim hover:text-red-500 transition-colors"
-              aria-label="Add to cart">
-              
-              <ShoppingCartIcon className="w-5 h-5" />
-            </button>
-          </motion.div>
-        </div>
+        <Reveal className="beat-list" delay={0.08}>
+          <div className="beat-list__head" aria-hidden="true">
+            <span>Track</span><span>Style</span><span>Licence</span><span>Action</span>
+          </div>
+          {beats.map((beat, index) => (
+            <article key={beat.slug} className="beat-row">
+              <div className="beat-row__title">
+                <span className="beat-number">{String(index + 1).padStart(2, '0')}</span>
+                <div className="mini-wave" aria-hidden="true">
+                  {[22, 58, 38, 82, 48, 68, 30, 76, 44, 62].map((height, barIndex) => (
+                    <i key={barIndex} style={{ height: `${height}%` }} />
+                  ))}
+                </div>
+                <span><strong>{beat.name}</strong><small>Produced by Lukulu</small></span>
+              </div>
+              <div className="beat-row__meta">
+                <FileAudioIcon aria-hidden="true" />
+                <span>{beat.genre}<small>{beat.bpm}</small></span>
+              </div>
+              <div className="beat-row__licence">
+                <span>{selectedLicence.name}</span>
+                <strong>{selectedLicence.price}</strong>
+              </div>
+              <CheckoutButton
+                itemId={`beat_${beat.slug}_${licence}`}
+                context={{ beat: beat.name, licence }}
+                className="button button-quiet beat-buy"
+                ariaLabel={`Buy ${beat.name} with the ${selectedLicence.name} for ${selectedLicence.price}`}
+              >
+                Buy licence <ShoppingBagIcon aria-hidden="true" />
+              </CheckoutButton>
+            </article>
+          ))}
+        </Reveal>
+        <p className="section-note">Licence limits shown above apply to each beat purchase. Keep your Stripe receipt for your records.</p>
       </div>
-    </section>);
-
+    </section>
+  );
 }

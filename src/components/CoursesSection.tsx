@@ -1,743 +1,262 @@
-import React, { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { motion } from 'framer-motion';
 import {
+  ArrowRightIcon,
+  BriefcaseBusinessIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  Clock3Icon,
   HeadphonesIcon,
   Music2Icon,
-  BriefcaseIcon,
-  PlayIcon,
-  ClockIcon,
-  UsersIcon,
-  ArrowRightIcon,
-  SlidersIcon,
-  BookOpenIcon,
-  CheckCircle2Icon } from
-'lucide-react';
+  SlidersHorizontalIcon,
+} from 'lucide-react';
+import { Reveal } from './Reveal';
+import { SectionIntro } from './SectionIntro';
+
 type Category = 'flstudio' | 'cubase' | 'reason' | 'business';
+
+type Course = {
+  title: string;
+  level: string;
+  duration?: string;
+  topics: string[];
+};
+
+const categories: Array<{
+  id: Category;
+  label: string;
+  note: string;
+  icon: typeof Music2Icon;
+}> = [
+  { id: 'flstudio', label: 'FL Studio', note: 'Beat-making to final master', icon: Music2Icon },
+  { id: 'cubase', label: 'Cubase', note: 'Recording and mix workflow', icon: HeadphonesIcon },
+  { id: 'reason', label: 'Reason', note: 'Rack, sound design and routing', icon: SlidersHorizontalIcon },
+  { id: 'business', label: 'Music Business', note: 'Rights, releases and royalties', icon: BriefcaseBusinessIcon },
+];
+
+const courses: Record<Category, Course[]> = {
+  flstudio: [
+    {
+      title: 'FL Studio Beginner',
+      level: 'Beginner',
+      duration: '4 weeks',
+      topics: ['Installing FL Studio', 'Understanding the interface', 'Channel rack basics', 'Piano roll basics', 'Creating your first beat'],
+    },
+    {
+      title: 'FL Studio Beat Production',
+      level: 'Intermediate',
+      duration: '6 weeks',
+      topics: ['Drum programming', 'Sampling', 'Melody creation', 'Arrangement', 'Exporting beats'],
+    },
+    {
+      title: 'FL Studio Mixing',
+      level: 'Advanced',
+      duration: '6 weeks',
+      topics: ['Mixer basics', 'EQ', 'Compression', 'Reverb and delay', 'Mixing vocals'],
+    },
+    {
+      title: 'FL Studio Mastering',
+      level: 'Expert',
+      duration: '4 weeks',
+      topics: ['Loudness', 'Final EQ', 'Limiting', 'Exporting for streaming platforms'],
+    },
+  ],
+  cubase: [
+    {
+      title: 'Cubase Beginner',
+      level: 'Beginner',
+      duration: '5 weeks',
+      topics: ['Setting up Cubase', 'Creating a project', 'Recording audio', 'MIDI basics', 'Editing audio'],
+    },
+    {
+      title: 'Cubase Music Production',
+      level: 'Intermediate',
+      duration: '6 weeks',
+      topics: ['Arrangement', 'MIDI programming', 'Instrument plugins', 'Automation'],
+    },
+    {
+      title: 'Cubase Mixing',
+      level: 'Advanced',
+      duration: '6 weeks',
+      topics: ['Channel strip', 'Effects', 'Mixing workflow', 'Final mixdown'],
+    },
+  ],
+  reason: [
+    {
+      title: 'Reason Beginner',
+      level: 'Beginner',
+      duration: '4 weeks',
+      topics: ['Rack interface', 'Devices and instruments', 'MIDI sequencing', 'Creating beats'],
+    },
+    {
+      title: 'Reason Sound Design',
+      level: 'Intermediate',
+      duration: '6 weeks',
+      topics: ['Synth basics', 'Creating custom sounds', 'Drum machines', 'Effects routing'],
+    },
+    {
+      title: 'Reason Advanced Production',
+      level: 'Advanced',
+      duration: '5 weeks',
+      topics: ['Rack extensions', 'Complex routing', 'Professional workflow'],
+    },
+  ],
+  business: [
+    {
+      title: 'Music Business Made Simple',
+      level: 'All levels',
+      topics: [
+        'Artist basics: music careers and how artists make money',
+        'Copyright basics: song ownership, producer rights and beat licences',
+        'Releasing music: distribution to Spotify, Apple Music and YouTube Music',
+        'Royalties: streaming, performance and producer royalties',
+        'Artist branding: names, artwork and social media promotion',
+      ],
+    },
+  ],
+};
+
 export function CoursesSection() {
   const [activeCategory, setActiveCategory] = useState<Category>('flstudio');
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: '-100px'
-  });
+  const [showScrollCue, setShowScrollCue] = useState(false);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const activeIndex = categories.findIndex((category) => category.id === activeCategory);
+  const activeMeta = categories[activeIndex];
+  const ActiveIcon = activeMeta.icon;
+
+  const updateScrollCue = useCallback(() => {
+    const tabList = tabListRef.current;
+    if (!tabList) return;
+    setShowScrollCue(tabList.scrollLeft + tabList.clientWidth < tabList.scrollWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    updateScrollCue();
+    window.addEventListener('resize', updateScrollCue);
+    return () => window.removeEventListener('resize', updateScrollCue);
+  }, [updateScrollCue]);
+
+  const selectTab = (category: Category, index: number) => {
+    setActiveCategory(category);
+    window.requestAnimationFrame(() => {
+      tabRefs.current[index]?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+      updateScrollCue();
+    });
+  };
+
+  const moveTabFocus = (event: KeyboardEvent, index: number) => {
+    let nextIndex = index;
+    if (event.key === 'ArrowRight') nextIndex = (index + 1) % categories.length;
+    else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + categories.length) % categories.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = categories.length - 1;
+    else return;
+    event.preventDefault();
+    selectTab(categories[nextIndex].id, nextIndex);
+    tabRefs.current[nextIndex]?.focus();
+  };
+
   return (
-    <section id="courses" className="py-24 bg-bg relative">
-      <div className="absolute inset-0 bg-tribal-pattern" />
+    <section id="courses" className="signal-section section-pad" aria-labelledby="courses-heading">
+      <div className="page-shell">
+        <SectionIntro
+          headingId="courses-heading"
+          number="02"
+          eyebrow="Curriculum"
+          title="Master your craft"
+          description="From beginner to professional. Choose a software path, see exactly what you will learn, and build skills you can use on a real track."
+        />
 
-      <div
-        ref={ref}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40
-          }}
-          animate={
-          isInView ?
-          {
-            opacity: 1,
-            y: 0
-          } :
-          {}
-          }
-          transition={{
-            duration: 0.6
-          }}
-          className="text-center mb-12">
-          
-          <p className="text-magenta font-medium text-sm tracking-[0.2em] uppercase mb-3">
-            Courses
-          </p>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">
-            MASTER YOUR CRAFT
-          </h2>
-          <p className="text-text-muted text-lg max-w-2xl mx-auto">
-            From beginner to professional. Choose your path and start building
-            your music career today.
-          </p>
-        </motion.div>
-
-        {/* Category Tabs */}
-        <div className="flex justify-center mb-12 overflow-x-auto pb-4 sm:pb-0">
-          <div className="inline-flex bg-surface border border-border rounded-xl p-1.5 gap-1 whitespace-nowrap">
-            <button
-              onClick={() => setActiveCategory('flstudio')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeCategory === 'flstudio' ? 'bg-gradient-warm text-bg shadow-[0_0_10px_rgba(225,112,85,0.2)]' : 'text-text-muted hover:text-white'}`}>
-              
-              <Music2Icon className="w-4 h-4" />
-              FL Studio
-            </button>
-            <button
-              onClick={() => setActiveCategory('cubase')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeCategory === 'cubase' ? 'bg-gradient-warm text-bg shadow-[0_0_10px_rgba(225,112,85,0.2)]' : 'text-text-muted hover:text-white'}`}>
-              
-              <HeadphonesIcon className="w-4 h-4" />
-              Cubase
-            </button>
-            <button
-              onClick={() => setActiveCategory('reason')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeCategory === 'reason' ? 'bg-gradient-warm text-bg shadow-[0_0_10px_rgba(225,112,85,0.2)]' : 'text-text-muted hover:text-white'}`}>
-              
-              <SlidersIcon className="w-4 h-4" />
-              Reason
-            </button>
-            <button
-              onClick={() => setActiveCategory('business')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeCategory === 'business' ? 'bg-gradient-warm text-bg shadow-[0_0_10px_rgba(225,112,85,0.2)]' : 'text-text-muted hover:text-white'}`}>
-              
-              <BriefcaseIcon className="w-4 h-4" />
-              Music Business
-            </button>
+        <Reveal>
+          <div className={`course-tabs-shell ${showScrollCue ? 'has-more' : ''}`}>
+            <div
+              ref={tabListRef}
+              className="course-tabs"
+              role="tablist"
+              aria-label="Course categories"
+              onScroll={updateScrollCue}
+            >
+              {categories.map((category, index) => {
+                const Icon = category.icon;
+                const selected = category.id === activeCategory;
+                return (
+                  <button
+                    key={category.id}
+                    ref={(element) => { tabRefs.current[index] = element; }}
+                    type="button"
+                    id={`tab-${category.id}`}
+                    role="tab"
+                    aria-selected={selected}
+                    aria-controls={`panel-${category.id}`}
+                    tabIndex={selected ? 0 : -1}
+                    className={selected ? 'is-active' : undefined}
+                    onClick={() => selectTab(category.id, index)}
+                    onKeyDown={(event) => moveTabFocus(event, index)}
+                  >
+                    <Icon aria-hidden="true" />
+                    <span>{category.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <span className="course-tabs-cue" aria-hidden="true">Swipe →</span>
           </div>
-        </div>
+        </Reveal>
 
-        {/* FL Studio Courses */}
-        {activeCategory === 'flstudio' &&
         <motion.div
-          key="flstudio"
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          transition={{
-            duration: 0.4
-          }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-orange/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-green-500/10 text-green-400 text-xs font-medium rounded-full">
-                  Beginner
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-orange transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                FL Studio Beginner
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Installing FL Studio
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Understanding the interface
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Channel rack basics
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Piano roll basics
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Creating your first beat
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 4 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 250+ students
-                </span>
-              </div>
+          key={activeCategory}
+          id={`panel-${activeCategory}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${activeCategory}`}
+          className="curriculum-panel"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <aside className="curriculum-summary">
+            <span className="curriculum-icon"><ActiveIcon aria-hidden="true" /></span>
+            <p className="console-label">ACTIVE TRACK</p>
+            <h3>{activeMeta.label}</h3>
+            <p>{activeMeta.note}</p>
+            <div>
+              <strong>{courses[activeCategory].length}</strong>
+              <span>{courses[activeCategory].length === 1 ? 'learning programme' : 'course levels'}</span>
             </div>
+          </aside>
 
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-orange/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-gold/10 text-gold text-xs font-medium rounded-full">
-                  Intermediate
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-orange transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                FL Studio Beat Production
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Drum programming
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Sampling
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Melody creation
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Arrangement
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Exporting beats
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 6 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 180+ students
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-orange/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-orange/10 text-orange text-xs font-medium rounded-full">
-                  Advanced
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-orange transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                FL Studio Mixing
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Mixer basics
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  EQ
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Compression
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Reverb and delay
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Mixing vocals
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 6 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 120+ students
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-orange/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-magenta/10 text-magenta text-xs font-medium rounded-full">
-                  Expert
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-orange transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                FL Studio Mastering
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Loudness
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Final EQ
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Limiting
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Exporting for streaming platforms
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 4 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 80+ students
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        }
-
-        {/* Cubase Courses */}
-        {activeCategory === 'cubase' &&
-        <motion.div
-          key="cubase"
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          transition={{
-            duration: 0.4
-          }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-magenta/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-green-500/10 text-green-400 text-xs font-medium rounded-full">
-                  Beginner
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-magenta transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                Cubase Beginner
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Setting up Cubase
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Creating a project
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Recording audio
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  MIDI basics
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-magenta mt-0.5 flex-shrink-0" />{' '}
-                  Editing audio
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 5 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 150+ students
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-magenta/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-gold/10 text-gold text-xs font-medium rounded-full">
-                  Intermediate
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-magenta transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                Cubase Music Production
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Arrangement
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  MIDI programming
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Instrument plugins
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Automation
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 6 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 110+ students
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-magenta/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-orange/10 text-orange text-xs font-medium rounded-full">
-                  Advanced
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-magenta transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                Cubase Mixing
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Channel strip
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Effects
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Mixing workflow
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Final mixdown
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 6 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 85+ students
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        }
-
-        {/* Reason Courses */}
-        {activeCategory === 'reason' &&
-        <motion.div
-          key="reason"
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          transition={{
-            duration: 0.4
-          }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-purple/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-green-500/10 text-green-400 text-xs font-medium rounded-full">
-                  Beginner
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-purple transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                Reason Beginner
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-purple mt-0.5 flex-shrink-0" />{' '}
-                  Rack interface
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-purple mt-0.5 flex-shrink-0" />{' '}
-                  Devices and instruments
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-purple mt-0.5 flex-shrink-0" />{' '}
-                  MIDI sequencing
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-purple mt-0.5 flex-shrink-0" />{' '}
-                  Creating beats
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 4 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 120+ students
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-purple/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-gold/10 text-gold text-xs font-medium rounded-full">
-                  Intermediate
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-purple transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                Reason Sound Design
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Synth basics
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Creating custom sounds
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Drum machines
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />{' '}
-                  Effects routing
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 6 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 90+ students
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6 group hover:border-purple/30 transition-colors">
-              <div className="flex items-start justify-between mb-4">
-                <span className="px-3 py-1 bg-orange/10 text-orange text-xs font-medium rounded-full">
-                  Advanced
-                </span>
-                <PlayIcon className="w-5 h-5 text-text-dim group-hover:text-purple transition-colors" />
-              </div>
-              <h3 className="font-heading text-xl font-semibold text-white mb-2">
-                Reason Advanced Production
-              </h3>
-              <ul className="space-y-2 mb-4 text-sm text-text-muted">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Rack extensions
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Complex routing
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2Icon className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" />{' '}
-                  Professional workflow
-                </li>
-              </ul>
-              <div className="flex items-center gap-4 text-xs text-text-dim mt-auto pt-4 border-t border-border">
-                <span className="flex items-center gap-1">
-                  <ClockIcon className="w-3.5 h-3.5" /> 5 weeks
-                </span>
-                <span className="flex items-center gap-1">
-                  <UsersIcon className="w-3.5 h-3.5" /> 60+ students
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        }
-
-        {/* Business Courses */}
-        {activeCategory === 'business' &&
-        <motion.div
-          key="business"
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          transition={{
-            duration: 0.4
-          }}
-          className="max-w-4xl mx-auto">
-          
-            <div className="bg-surface border border-border rounded-xl overflow-hidden">
-              <div className="p-8 border-b border-border bg-gradient-to-br from-surface-2 to-surface">
-                <h3 className="font-heading text-3xl font-bold text-white mb-2">
-                  Music Business Made Simple
-                </h3>
-                <p className="text-text-muted text-lg">
-                  Easy English for artists in South Africa. Learn how to protect
-                  your music, release it, and make money.
-                </p>
-              </div>
-
-              <div className="divide-y divide-border">
-                <div className="p-6 sm:p-8 hover:bg-surface-2/50 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="font-heading font-bold text-gold">
-                        1
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-heading text-xl font-semibold text-white mb-2">
-                        Artist Basics
-                      </h4>
-                      <ul className="space-y-2 text-text-muted">
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          What is a music career
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" /> How
-                          artists make money
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-8 hover:bg-surface-2/50 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-orange/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="font-heading font-bold text-orange">
-                        2
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-heading text-xl font-semibold text-white mb-2">
-                        Copyright Basics
-                      </h4>
-                      <ul className="space-y-2 text-text-muted">
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Song ownership
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Producer rights
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Beat licenses
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-8 hover:bg-surface-2/50 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-magenta/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="font-heading font-bold text-magenta">
-                        3
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-heading text-xl font-semibold text-white mb-2">
-                        Releasing Music
-                      </h4>
-                      <ul className="space-y-2 text-text-muted">
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Platforms like Spotify, Apple Music, YouTube Music
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" /> How
-                          distribution works
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-8 hover:bg-surface-2/50 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-purple/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="font-heading font-bold text-purple">
-                        4
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-heading text-xl font-semibold text-white mb-2">
-                        Royalties Explained
-                      </h4>
-                      <ul className="space-y-2 text-text-muted">
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Streaming royalties
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Performance royalties
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Producer royalties
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-8 hover:bg-surface-2/50 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="font-heading font-bold text-gold">
-                        5
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-heading text-xl font-semibold text-white mb-2">
-                        Branding for Artists
-                      </h4>
-                      <ul className="space-y-2 text-text-muted">
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Artist name & Artwork
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Social media promotion
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <BookOpenIcon className="w-4 h-4 text-text-dim" />{' '}
-                          Using platforms like Instagram, TikTok, YouTube
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        }
-
-        {/* CTA */}
-        <motion.div
-          initial={{
-            opacity: 0
-          }}
-          animate={
-          isInView ?
-          {
-            opacity: 1
-          } :
-          {}
-          }
-          transition={{
-            delay: 0.5,
-            duration: 0.5
-          }}
-          className="text-center mt-12">
-          
-          <a
-            href="#pricing"
-            className="inline-flex items-center gap-2 text-orange font-medium hover:text-gold transition-colors">
-            
-            View subscription plans to access all courses
-            <ArrowRightIcon className="w-4 h-4" />
-          </a>
+          <div className="course-list">
+            {courses[activeCategory].map((course, index) => (
+              <details key={course.title} className="course-row" open={index === 0}>
+                <summary>
+                  <span className="course-row__number">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="course-row__title">
+                    <strong>{course.title}</strong>
+                    <small>{course.level}</small>
+                  </span>
+                  {course.duration && (
+                    <span className="course-row__duration"><Clock3Icon aria-hidden="true" /> {course.duration}</span>
+                  )}
+                  <ChevronDownIcon className="course-row__chevron" aria-hidden="true" />
+                </summary>
+                <ul>
+                  {course.topics.map((topic) => (
+                    <li key={topic}><CheckIcon aria-hidden="true" /> {topic}</li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
         </motion.div>
-      </div>
-    </section>);
 
+        <a href="#pricing" className="section-link">
+          Compare membership plans <ArrowRightIcon aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  );
 }
