@@ -1,0 +1,110 @@
+/* --- MANAGED FONT IMPORTS START (do not edit manually) --- */
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* --- MANAGED FONT IMPORTS END --- */
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+:root {
+  /* Warm Dark Theme - Afro House Aesthetic */
+  --color-bg: #0D0907; /* Deep brown-black */
+  --color-surface: #1A1410; /* Warm dark brown */
+  --color-surface-2: #241E18; /* Lighter warm brown */
+  --color-border: #3D3228; /* Warm border */
+  /* Accents */
+  --color-gold: #E8A838;
+  --color-gold-light: #F5C563;
+  --color-orange: #E17055; /* Burnt orange */
+  --color-magenta: #D63384; /* Deep magenta */
+  --color-purple: #7B2D8E; /* Deep African purple */
+  /* Text */
+  --color-text: #FDFBF7; /* Off-white, slightly warm */
+  --color-text-muted: #A89F91; /* Warm gray */
+  --color-text-dim: #7A7063; /* Darker warm gray */
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+/* Subtle Noise Texture Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oswald', sans-serif;
+}
+/* Custom scrollbar - Warm */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-orange);
+}
+/* Glow effect utilities - Warm */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(232, 168, 56, 0.25);
+}
+.glow-orange {
+  box-shadow: 0 0 20px rgba(225, 112, 85, 0.25);
+}
+.glow-magenta {
+  box-shadow: 0 0 20px rgba(214, 51, 132, 0.25);
+}
+/* Gradient text - Sunset */
+.text-gradient-sunset {
+  background: linear-gradient(135deg, #D63384, #E17055, #E8A838);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-gold {
+  background: linear-gradient(135deg, #E8A838, #F5C563);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* Tribal Geometric Pattern Utility */
+.bg-tribal-pattern {
+  background-image: 
+    linear-gradient(30deg, var(--color-border) 12%, transparent 12.5%, transparent 87%, var(--color-border) 87.5%, var(--color-border)),
+    linear-gradient(150deg, var(--color-border) 12%, transparent 12.5%, transparent 87%, var(--color-border) 87.5%, var(--color-border)),
+    linear-gradient(30deg, var(--color-border) 12%, transparent 12.5%, transparent 87%, var(--color-border) 87.5%, var(--color-border)),
+    linear-gradient(150deg, var(--color-border) 12%, transparent 12.5%, transparent 87%, var(--color-border) 87.5%, var(--color-border)),
+    linear-gradient(60deg, var(--color-surface-2) 25%, transparent 25.5%, transparent 75%, var(--color-surface-2) 75%, var(--color-surface-2)),
+    linear-gradient(60deg, var(--color-surface-2) 25%, transparent 25.5%, transparent 75%, var(--color-surface-2) 75%, var(--color-surface-2));
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+  opacity: 0.05;
+}
+/* Divider Gradient - Sunset */
+.divider-sunset {
+  background: linear-gradient(to right, transparent, rgba(214, 51, 132, 0.5), rgba(225, 112, 85, 0.5), rgba(232, 168, 56, 0.5), transparent);
+}
