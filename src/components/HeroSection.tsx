@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowDownIcon, ArrowUpRightIcon, Disc3Icon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const stats = [
   { value: '14+', label: 'Courses' },
@@ -39,9 +40,9 @@ export function HeroSection() {
             <a href="#courses" className="button button-primary">
               Explore the academy <ArrowDownIcon aria-hidden="true" />
             </a>
-            <a href="#label" className="button button-quiet">
+            <Link to="/enquire?category=label&service=demo-submission" className="button button-quiet">
               Submit your demo <ArrowUpRightIcon aria-hidden="true" />
-            </a>
+            </Link>
           </div>
         </motion.div>
 

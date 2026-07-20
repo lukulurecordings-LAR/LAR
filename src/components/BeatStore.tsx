@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowUpRightIcon, FileAudioIcon, LockKeyholeIcon, ShoppingBagIcon } from 'lucide-react';
 import { CheckoutButton } from './CheckoutButton';
+import { Link } from 'react-router-dom';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
 
@@ -63,9 +64,9 @@ export function BeatStore() {
               <strong>Need exclusive rights?</strong>
               <p>Exclusive licences start at R3,500 and require an availability check before payment.</p>
             </div>
-            <a href="mailto:lukulurecordings@gmail.com?subject=Exclusive%20beat%20availability%20inquiry">
+            <Link to="/enquire?category=beats&service=exclusive-availability">
               Check availability <ArrowUpRightIcon aria-hidden="true" />
-            </a>
+            </Link>
           </div>
         </Reveal>
 

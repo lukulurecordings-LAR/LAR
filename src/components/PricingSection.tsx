@@ -10,6 +10,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
+import { Link } from 'react-router-dom';
 
 const plans = [
   {
@@ -103,9 +104,9 @@ export function PricingSection() {
 
         <div className="pricing-footnotes">
           <p><ShieldCheckIcon aria-hidden="true" /> Paid plans continue to Stripe’s secure hosted checkout. Lukulu confirms access by email.</p>
-          <a href="mailto:lukulurecordings@gmail.com?subject=Lukulu%20referral%20programme">
-            <UsersIcon aria-hidden="true" /> Refer a friend and ask about the 5% commission programme
-          </a>
+          <Link to="/enquire?category=accounts&service=subscription-help">
+            <UsersIcon aria-hidden="true" /> Membership, invoice or referral help
+          </Link>
         </div>
       </div>
     </section>

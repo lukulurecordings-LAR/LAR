@@ -11,6 +11,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
+import { Link } from 'react-router-dom';
 
 const services = [
   {
@@ -189,7 +190,7 @@ export function StudioBooking() {
             >
               Pay starting charge securely <ShieldCheckIcon aria-hidden="true" />
             </CheckoutButton>
-            <p className="form-footnote">Remote mixing and mastering are available; ask the team after checkout.</p>
+            <p className="form-footnote">Remote mixing and mastering are available. <Link to={`/enquire?category=studio&service=${selectedService.shortId}`}>Ask about this service</Link>.</p>
           </form>
         </Reveal>
       </div>

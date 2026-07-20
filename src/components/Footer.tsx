@@ -1,28 +1,30 @@
-import { LockKeyholeIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
+import { FileTextIcon, LockKeyholeIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
   return (
     <footer className="site-footer">
       <div className="page-shell">
         <div className="footer-lead">
-          <a href="#home" className="brand-lockup">
-            <img src="/Lukulu_Logo.png" alt="Lukulu Academy & Recordings" />
+          <Link to="/" className="brand-lockup" aria-label="Lukulu Academy & Recordings home">
+            <img src="/Lukulu_Logo.png" alt="" />
             <span><strong>LUKULU</strong><small>Academy & Recordings</small></span>
-          </a>
+          </Link>
           <p>Learn music. Create music. Release music. Your music career starts here in South Africa.</p>
         </div>
 
         <div className="footer-nav">
           <div>
             <h2>Explore</h2>
-            <a href="#courses">Academy courses</a>
-            <a href="#pricing">Membership plans</a>
-            <a href="#studio">Studio booking</a>
-            <a href="#beats">Beat licences</a>
+            <Link to="/#courses">Academy courses</Link>
+            <Link to="/#services">All services</Link>
+            <Link to="/news">Label news</Link>
+            <Link to="/student/login">Student login</Link>
           </div>
           <div>
             <h2>Make contact</h2>
-            <a href="mailto:lukulurecordings@gmail.com"><MailIcon aria-hidden="true" /> lukulurecordings@gmail.com</a>
+            <Link to="/enquire"><MailIcon aria-hidden="true" /> Structured enquiry</Link>
+            <Link to="/enquire?category=accounts&service=receipt-invoice"><FileTextIcon aria-hidden="true" /> Request an invoice</Link>
             <a href="tel:+27730933554"><PhoneIcon aria-hidden="true" /> +27 73 093 3554</a>
             <span><MapPinIcon aria-hidden="true" /> South Africa</span>
           </div>

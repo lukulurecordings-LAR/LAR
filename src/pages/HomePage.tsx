@@ -9,15 +9,19 @@ import { DesignServices } from '../components/DesignServices';
 import { StudentPipeline } from '../components/StudentPipeline';
 import { LabelSection } from '../components/LabelSection';
 import { Footer } from '../components/Footer';
+import { ServiceGateway } from '../components/ServiceGateway';
+import { DocumentTitle } from '../components/DocumentTitle';
 export function HomePage() {
   return (
     <>
+      <DocumentTitle title="Learn. Create. Release." />
       <HeroSection />
       <AboutSection />
       <CoursesSection />
       <PricingSection />
       <BenefitsSection />
       <StudentPipeline />
+      <ServiceGateway />
       <StudioBooking />
       <BeatStore />
       <DesignServices />

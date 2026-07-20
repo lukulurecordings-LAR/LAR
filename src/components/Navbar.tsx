@@ -1,16 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MenuIcon, XIcon } from 'lucide-react';
+import { LogInIcon, MenuIcon, XIcon } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const NAV_LINKS = [
-  { label: 'Home', href: '#home' },
-  { label: 'Courses', href: '#courses' },
-  { label: 'Plans', href: '#pricing' },
-  { label: 'Studio', href: '#studio' },
-  { label: 'Beats', href: '#beats' },
-  { label: 'Design', href: '#design' },
-  { label: 'Label', href: '#label' },
+  { label: 'Learn', to: '/#courses', section: 'learn' },
+  { label: 'Services', to: '/#services', section: 'services' },
+  { label: 'Label News', to: '/news', section: 'news' },
+  { label: 'Enquire', to: '/enquire', section: 'enquire' },
+  { label: 'Student Login', to: '/student/login', section: 'student', icon: LogInIcon },
 ];
+
+const OBSERVED_SECTIONS: Record<string, string> = {
+  home: 'home',
+  about: 'home',
+  courses: 'learn',
+  pricing: 'learn',
+  benefits: 'learn',
+  journey: 'learn',
+  services: 'services',
+  studio: 'services',
+  beats: 'services',
+  design: 'services',
+  label: 'news',
+};
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,23 +31,27 @@ export function Navbar() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const firstMobileLinkRef = useRef<HTMLAnchorElement>(null);
+  const location = useLocation();
+
+  useEffect(() => setIsOpen(false), [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
-    const sections = NAV_LINKS.map(({ href }) => document.querySelector(href)).filter(
-      (section): section is Element => Boolean(section),
-    );
+    if (location.pathname !== '/') return;
+    const sections = Object.keys(OBSERVED_SECTIONS)
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section));
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActiveSection(visible.target.id);
+        if (visible?.target.id) setActiveSection(OBSERVED_SECTIONS[visible.target.id] ?? 'home');
       },
       { rootMargin: '-20% 0px -68% 0px', threshold: [0, 0.15, 0.5] },
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -54,23 +71,16 @@ export function Navbar() {
           mobileNavRef.current?.querySelectorAll<HTMLElement>(
             'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
           ) ?? [],
-        ).filter((element) => !element.hasAttribute('disabled'));
-
+        );
         if (focusableElements.length === 0) return;
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
         const activeElement = document.activeElement;
 
-        if (
-          event.shiftKey &&
-          (activeElement === firstElement || !mobileNavRef.current?.contains(activeElement))
-        ) {
+        if (event.shiftKey && (activeElement === firstElement || !mobileNavRef.current?.contains(activeElement))) {
           event.preventDefault();
           lastElement.focus();
-        } else if (
-          !event.shiftKey &&
-          (activeElement === lastElement || !mobileNavRef.current?.contains(activeElement))
-        ) {
+        } else if (!event.shiftKey && (activeElement === lastElement || !mobileNavRef.current?.contains(activeElement))) {
           event.preventDefault();
           firstElement.focus();
         }
@@ -84,36 +94,36 @@ export function Navbar() {
     };
   }, [isOpen]);
 
-  const closeMenu = () => setIsOpen(false);
+  const isCurrent = (section: string) => {
+    if (section === 'news') return location.pathname === '/news';
+    if (section === 'enquire') return location.pathname === '/enquire';
+    if (section === 'student') return location.pathname.startsWith('/student');
+    return location.pathname === '/' && activeSection === section;
+  };
 
   return (
     <nav className="site-nav" aria-label="Primary navigation">
       <div className="nav-inner">
-        <a href="#home" className="brand-lockup" onClick={closeMenu}>
-          <img src="/Lukulu_Logo.png" alt="Lukulu Academy & Recordings" />
-          <span>
-            <strong>LUKULU</strong>
-            <small>Academy & Recordings</small>
-          </span>
-        </a>
+        <Link to="/" className="brand-lockup" aria-label="Lukulu Academy & Recordings home">
+          <img src="/Lukulu_Logo.png" alt="" />
+          <span><strong>LUKULU</strong><small>Academy & Recordings</small></span>
+        </Link>
 
-        <div className="desktop-nav" aria-label="Page sections">
+        <div className="desktop-nav" aria-label="Main destinations">
           {NAV_LINKS.map((link) => {
-            const isCurrent = activeSection === link.href.slice(1);
+            const current = isCurrent(link.section);
+            const Icon = link.icon;
             return (
-              <a
-                key={link.href}
-                href={link.href}
-                className={isCurrent ? 'is-current' : undefined}
-                aria-current={isCurrent ? 'location' : undefined}
+              <Link
+                key={link.to}
+                to={link.to}
+                className={link.section === 'student' ? 'nav-cta' : current ? 'is-current' : undefined}
+                aria-current={current ? 'page' : undefined}
               >
-                {link.label}
-              </a>
+                {Icon && <Icon aria-hidden="true" />}{link.label}
+              </Link>
             );
           })}
-          <a className="nav-cta" href="#label">
-            Submit demo
-          </a>
         </div>
 
         <button
@@ -143,29 +153,24 @@ export function Navbar() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.18 }}
           >
-            <div className="mobile-nav__signal" aria-hidden="true">
-              <span>MENU / SIGNAL PATH</span>
-              <i />
-            </div>
+            <div className="mobile-nav__signal" aria-hidden="true"><span>MENU / SIGNAL PATH</span><i /></div>
             {NAV_LINKS.map((link, index) => {
-              const isCurrent = activeSection === link.href.slice(1);
+              const current = isCurrent(link.section);
               return (
-                <a
-                  key={link.href}
+                <Link
+                  key={link.to}
                   ref={index === 0 ? firstMobileLinkRef : undefined}
-                  href={link.href}
-                  onClick={closeMenu}
-                  className={isCurrent ? 'is-current' : undefined}
-                  aria-current={isCurrent ? 'location' : undefined}
+                  to={link.to}
+                  className={current ? 'is-current' : undefined}
+                  aria-current={current ? 'page' : undefined}
                 >
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  {link.label}
-                </a>
+                  <span>{String(index + 1).padStart(2, '0')}</span>{link.label}
+                </Link>
               );
             })}
-            <a className="button button-primary" href="#label" onClick={closeMenu}>
-              Submit your demo
-            </a>
+            <Link className="button button-primary" to="/enquire">
+              Start an enquiry
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

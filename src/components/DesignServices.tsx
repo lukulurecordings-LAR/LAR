@@ -9,6 +9,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
+import { Link } from 'react-router-dom';
 
 const services = [
   {
@@ -90,6 +91,9 @@ export function DesignServices() {
             );
           })}
         </Reveal>
+        <Link className="section-link" to="/enquire?category=design&service=cover">
+          Need help choosing a format? Start a design enquiry
+        </Link>
       </div>
     </section>
   );

@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { AlertCircleIcon, LoaderCircleIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 type CheckoutContext = Record<string, string>;
 
@@ -32,6 +34,7 @@ export function CheckoutButton({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [needsContact, setNeedsContact] = useState(false);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
 
   const beginCheckout = async () => {
     if (loading || disabled) return;
@@ -40,18 +43,40 @@ export function CheckoutButton({
     setLoading(true);
     setError('');
     setNeedsContact(false);
+    setNeedsSignIn(false);
 
     try {
+      const idempotencyKey = window.crypto.randomUUID();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+      };
+      const membershipCheckout = itemId.startsWith('plan_');
+      const { data: sessionData } = supabase
+        ? await supabase.auth.getSession()
+        : { data: { session: null } };
+      const accessToken = sessionData.session?.access_token;
+
+      if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+      if (membershipCheckout && !accessToken) {
+        setNeedsSignIn(true);
+        throw new Error('Student sign-in is required before starting a membership checkout.');
+      }
+
       const body = context ? { itemId, context } : { itemId };
       const response = await fetch('/api/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(body),
       });
       const data = (await response.json().catch(() => ({}))) as CheckoutResponse;
 
       if (!response.ok) {
         const rawMessage = data.error || data.message || '';
+        if (data.code === 'AUTH_REQUIRED' || data.code === 'INVALID_SESSION') {
+          setNeedsSignIn(true);
+          throw new Error('Student sign-in is required before starting a membership checkout.');
+        }
         const stripeUnavailable =
           data.code === 'STRIPE_NOT_CONFIGURED' ||
           /not configured|configuration|stripe unavailable/i.test(rawMessage);
@@ -105,6 +130,9 @@ export function CheckoutButton({
                 <a href="mailto:lukulurecordings@gmail.com?subject=Lukulu%20order%20help">
                   Email Lukulu
                 </a>
+              )}
+              {needsSignIn && (
+                <Link to="/student/login">Sign in to continue</Link>
               )}
             </span>
           </>
