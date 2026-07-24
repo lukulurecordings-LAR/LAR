@@ -28,7 +28,6 @@ export function StudentLoginPage() {
       email: email.trim(),
       options: {
         emailRedirectTo: `${window.location.origin}/student`,
-        shouldCreateUser: false,
       },
     });
 
@@ -92,7 +91,7 @@ export function StudentLoginPage() {
             )}
 
             <div className="auth-console__foot">
-              <p><LockKeyholeIcon aria-hidden="true" /> Enrolled-student sign-in only. Public account creation is disabled.</p>
+              <p><LockKeyholeIcon aria-hidden="true" /> Student access is verified after sign-in.</p>
               <Link to="/student">Already signed in? Open dashboard <ArrowRightIcon aria-hidden="true" /></Link>
             </div>
           </div>
@@ -102,3 +101,4 @@ export function StudentLoginPage() {
     </>
   );
 }
+
