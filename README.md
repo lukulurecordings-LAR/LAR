@@ -2,7 +2,15 @@
 
 The public website and commerce front door for Lukulu Academy & Recordings: music-production courses, studio bookings, beat licences, design services, and demo submissions.
 
-**Live site:** [lar-main.vercel.app](https://lar-main.vercel.app)
+## Live deployments
+
+- **Full Academy platform:** [lar-main.vercel.app](https://lar-main.vercel.app)
+- **ChatGPT Sites edition:** [lukulu-academy.phushiplan.chatgpt.site](https://lukulu-academy.phushiplan.chatgpt.site)
+
+The root Vite/Vercel application remains the full platform with student access,
+payments, enquiries, news and backend routes. The source for the ChatGPT Sites
+edition is preserved separately under `sites/lukulu-academy/` so both versions
+can evolve without one overwriting the other.
 
 ## Local development
 
