@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LogInIcon, MenuIcon, XIcon } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 
 const NAV_LINKS = [
-  { label: 'Learn', to: '/#courses', section: 'learn' },
+  { label: 'Remote Courses', to: '/#remote-courses', section: 'learn' },
   { label: 'Services', to: '/#services', section: 'services' },
   { label: 'Label News', to: '/news', section: 'news' },
   { label: 'Enquire', to: '/enquire', section: 'enquire' },
@@ -15,6 +15,7 @@ const OBSERVED_SECTIONS: Record<string, string> = {
   home: 'home',
   about: 'home',
   courses: 'learn',
+  'remote-courses': 'learn',
   pricing: 'learn',
   benefits: 'learn',
   journey: 'learn',

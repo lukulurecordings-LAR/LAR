@@ -8,7 +8,7 @@ import {
   LockKeyholeIcon,
   MailIcon,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { DocumentTitle } from '../components/DocumentTitle';
 import { Footer } from '../components/Footer';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';

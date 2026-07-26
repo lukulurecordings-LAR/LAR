@@ -22,7 +22,7 @@ export function StudentPipeline() {
       <div className="page-shell">
         <SectionIntro
           headingId="journey-heading"
-          number="05"
+          number="06"
           eyebrow="Your journey"
           title="From student to artist"
           description="Lukulu does more than teach software. The academy gives you a practical path toward making, submitting and potentially releasing your own music."

@@ -10,7 +10,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const plans = [
   {
@@ -54,7 +54,7 @@ export function PricingSection() {
       <div className="page-shell">
         <SectionIntro
           headingId="pricing-heading"
-          number="03"
+          number="04"
           eyebrow="Memberships"
           title="Choose your plan"
           description="Straightforward monthly options for South African musicians. Start with the course previews, then upgrade when you need deeper access and support."

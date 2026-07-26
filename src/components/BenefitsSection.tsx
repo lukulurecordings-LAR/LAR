@@ -31,7 +31,7 @@ export function BenefitsSection() {
       <div className="page-shell">
         <SectionIntro
           headingId="benefits-heading"
-          number="04"
+          number="05"
           eyebrow="Why Lukulu"
           title="Everything you need to start"
           description="Tools, practical knowledge and a credible next step — designed around the realities of an independent South African artist."

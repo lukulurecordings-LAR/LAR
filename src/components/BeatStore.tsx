@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowUpRightIcon, FileAudioIcon, LockKeyholeIcon, ShoppingBagIcon } from 'lucide-react';
 import { CheckoutButton } from './CheckoutButton';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
 
@@ -36,7 +36,7 @@ export function BeatStore() {
       <div className="page-shell">
         <SectionIntro
           headingId="beats-heading"
-          number="07"
+          number="08"
           eyebrow="Beat store"
           title="Choose a beat. Know the rights."
           description="In-house Amapiano, Hip Hop, Afro House and House production. Select one licence for the catalogue and see the exact price before checkout."
