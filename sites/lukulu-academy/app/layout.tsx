@@ -12,6 +12,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Next layouts intentionally export route metadata alongside the layout component.
+// eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
   title: "Lukulu Academy | Learn. Create. Release.",
   description:

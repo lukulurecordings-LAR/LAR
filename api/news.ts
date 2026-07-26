@@ -1,21 +1,24 @@
 import type { ApiRequest, ApiResponse } from './_lib/http.js';
+import { getSiteUrl } from './_lib/environment.js';
 import { requireMethod, sendJson } from './_lib/http.js';
 import { supabaseAdminRequest } from './_lib/supabase.js';
 
-const curatedSources = [
-  {
-    name: 'Lukulu Academy & Recordings',
-    type: 'website',
-    url: 'https://lar-main.vercel.app/',
-    note: 'Official website and service updates.',
-  },
-  {
-    name: 'Google News search',
-    type: 'google',
-    url: 'https://news.google.com/search?q=%22Lukulu%20Academy%20%26%20Recordings%22',
-    note: 'Independent web coverage; results are not automatically republished.',
-  },
-] as const;
+function getCuratedSources() {
+  return [
+    {
+      name: 'Lukulu Academy & Recordings',
+      type: 'website',
+      url: `${getSiteUrl() ?? 'https://lar-main-self.vercel.app'}/`,
+      note: 'Official website and service updates.',
+    },
+    {
+      name: 'Google News search',
+      type: 'google',
+      url: 'https://news.google.com/search?q=%22Lukulu%20Academy%20%26%20Recordings%22',
+      note: 'Independent web coverage; results are not automatically republished.',
+    },
+  ] as const;
+}
 
 type NewsRow = {
   id?: unknown;
@@ -71,6 +74,7 @@ function normalize(row: NewsRow) {
 
 export default async function handler(request: ApiRequest, response: ApiResponse) {
   if (!requireMethod(request, response, 'GET')) return;
+  const curatedSources = getCuratedSources();
 
   const query = [
     'select=id,title,summary,url,source_name,source_type,content_type,image_url,published_at',
