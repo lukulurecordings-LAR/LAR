@@ -4,7 +4,7 @@ The public website and commerce front door for Lukulu Academy & Recordings: musi
 
 ## Live deployments
 
-- **Full Academy platform:** [lar-main.vercel.app](https://lar-main.vercel.app)
+- **Full Academy platform:** [lar-main-self.vercel.app](https://lar-main-self.vercel.app)
 - **ChatGPT Sites edition:** [lukulu-academy.phushiplan.chatgpt.site](https://lukulu-academy.phushiplan.chatgpt.site)
 
 The root Vite/Vercel application remains the full platform with student access,
