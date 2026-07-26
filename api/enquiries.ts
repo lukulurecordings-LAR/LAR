@@ -4,7 +4,7 @@ import { jsonBodyError, readJsonBody, requireMethod, sendJson } from './_lib/htt
 import { supabaseAdminRequest } from './_lib/supabase.js';
 
 const services = {
-  academy: ['course-advice', 'basic', 'pro', 'vip', 'billing-help'],
+  academy: ['course-advice', 'remote-course', 'basic', 'pro', 'vip', 'billing-help'],
   studio: ['recording', 'mixing', 'mastering', 'podcast'],
   beats: ['basic-licence', 'premium-licence', 'exclusive-availability', 'custom-production'],
   design: ['cover', 'poster', 'album', 'video', 'social-pack'],

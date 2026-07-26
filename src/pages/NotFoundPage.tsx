@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, RouteIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { DocumentTitle } from '../components/DocumentTitle';
 import { Footer } from '../components/Footer';
 

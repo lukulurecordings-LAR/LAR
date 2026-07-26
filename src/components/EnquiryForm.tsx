@@ -8,7 +8,7 @@ import {
   MailIcon,
   SendIcon,
 } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 type Service = { value: string; label: string };
 type Category = { value: string; label: string; services: Service[] };
@@ -19,6 +19,7 @@ const enquiryCategories: Category[] = [
     label: 'Academy',
     services: [
       { value: 'course-advice', label: 'Course advice' },
+      { value: 'remote-course', label: 'Remote course enrolment' },
       { value: 'basic', label: 'Basic membership' },
       { value: 'pro', label: 'Pro membership' },
       { value: 'vip', label: 'VIP membership' },
@@ -134,7 +135,14 @@ export function EnquiryForm({ initialCategory = '', initialService = '', compact
       query.get('category') ?? initialCategory,
       query.get('service') ?? initialService,
     );
-    setForm((current) => ({ ...current, ...selected }));
+    const courseName = (query.get('course') ?? '').trim().slice(0, 120);
+    setForm((current) => ({
+      ...current,
+      ...selected,
+      message: courseName && !current.message.trim()
+        ? `I'm interested in the ${courseName} remote course. Please send me the next available intake and enrolment details.`
+        : current.message,
+    }));
   }, [initialCategory, initialService, location.search]);
 
   const category = enquiryCategories.find((item) => item.value === form.category);

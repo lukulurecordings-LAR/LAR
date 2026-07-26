@@ -1,5 +1,5 @@
 import { ArrowRightIcon, Disc3Icon, ExternalLinkIcon, NewspaperIcon, SendIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
 
@@ -36,7 +36,7 @@ export function LabelSection() {
       <div className="page-shell">
         <SectionIntro
           headingId="label-heading"
-          number="09"
+          number="10"
           eyebrow="Record label"
           title="Follow the label signal"
           description="Use the sourced news desk for releases and updates, or route a finished demo directly to label enquiry. Nothing is published automatically."

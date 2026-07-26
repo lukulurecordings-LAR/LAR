@@ -13,7 +13,7 @@ import {
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
 
-type Category = 'flstudio' | 'cubase' | 'reason' | 'dj' | 'business';
+type Category = 'flstudio' | 'cubase' | 'reason' | 'business';
 
 type Course = {
   title: string;
@@ -28,320 +28,89 @@ const categories: Array<{
   note: string;
   icon: typeof Music2Icon;
 }> = [
-  { id: 'flstudio', label: 'FL Studio', note: 'From first beat to release-ready master', icon: Music2Icon },
-  { id: 'cubase', label: 'Cubase', note: 'Recording, editing, arrangement and mixing', icon: HeadphonesIcon },
-  { id: 'reason', label: 'Reason', note: 'Rack production, synthesis and creative routing', icon: SlidersHorizontalIcon },
-  { id: 'dj', label: 'DJ & Performance', note: 'Club-ready mixing, set building and live delivery', icon: HeadphonesIcon },
-  { id: 'business', label: 'Music Business', note: 'Rights, royalties, branding and release strategy', icon: BriefcaseBusinessIcon },
+  { id: 'flstudio', label: 'FL Studio', note: 'Beat-making to final master', icon: Music2Icon },
+  { id: 'cubase', label: 'Cubase', note: 'Recording and mix workflow', icon: HeadphonesIcon },
+  { id: 'reason', label: 'Reason', note: 'Rack, sound design and routing', icon: SlidersHorizontalIcon },
+  { id: 'business', label: 'Music Business', note: 'Rights, releases and royalties', icon: BriefcaseBusinessIcon },
 ];
 
 const courses: Record<Category, Course[]> = {
   flstudio: [
     {
-      title: 'FL Studio Foundations',
+      title: 'FL Studio Beginner',
       level: 'Beginner',
       duration: '4 weeks',
-      topics: [
-        'Installing and configuring FL Studio',
-        'Browser, channel rack, playlist and mixer workflow',
-        'Piano roll, scales, chords and basic MIDI editing',
-        'Drum programming for Afro House, Amapiano and Hip-Hop',
-        'Building and arranging a complete first beat',
-        'Exporting stems, instrumentals and MP3/WAV files',
-      ],
+      topics: ['Installing FL Studio', 'Understanding the interface', 'Channel rack basics', 'Piano roll basics', 'Creating your first beat'],
     },
     {
-      title: 'Afro House & Amapiano Production',
+      title: 'FL Studio Beat Production',
       level: 'Intermediate',
       duration: '6 weeks',
-      topics: [
-        'Genre analysis, tempo, groove and rhythmic identity',
-        'Log drums, percussion layers and South African drum programming',
-        'Basslines, chord progressions, leads and atmospheric textures',
-        'Sampling, audio warping and vocal chop techniques',
-        'Transitions, tension, breakdowns and drop arrangement',
-        'Completing an original release-ready production',
-      ],
+      topics: ['Drum programming', 'Sampling', 'Melody creation', 'Arrangement', 'Exporting beats'],
     },
     {
-      title: 'Vocal Recording & Production in FL Studio',
-      level: 'Intermediate',
-      duration: '5 weeks',
-      topics: [
-        'Home-studio setup, microphones, gain staging and room control',
-        'Recording lead vocals, harmonies, ad-libs and doubles',
-        'Comping, timing correction and clean vocal editing',
-        'Pitch correction used naturally and musically',
-        'Vocal EQ, compression, de-essing, reverb and delay',
-        'Preparing vocal stems for collaboration and mixing',
-      ],
-    },
-    {
-      title: 'Professional Mixing in FL Studio',
+      title: 'FL Studio Mixing',
       level: 'Advanced',
       duration: '6 weeks',
-      topics: [
-        'Session organisation, gain staging and mix preparation',
-        'Corrective and creative EQ',
-        'Compression, sidechain control and transient shaping',
-        'Depth, width, panning, reverb and delay',
-        'Automation, mix translation and reference-track analysis',
-        'Delivering a balanced stereo mix and clean stems',
-      ],
+      topics: ['Mixer basics', 'EQ', 'Compression', 'Reverb and delay', 'Mixing vocals'],
     },
     {
-      title: 'Mastering & Digital Delivery',
-      level: 'Advanced',
+      title: 'FL Studio Mastering',
+      level: 'Expert',
       duration: '4 weeks',
-      topics: [
-        'Mastering workflow and critical listening',
-        'Tonal balance, dynamics and stereo control',
-        'Clipping, limiting, loudness and headroom',
-        'Preparing streaming, radio, club and DJ versions',
-        'Metadata, file naming, quality control and delivery',
-        'Mastering a final portfolio single',
-      ],
+      topics: ['Loudness', 'Final EQ', 'Limiting', 'Exporting for streaming platforms'],
     },
   ],
   cubase: [
     {
-      title: 'Cubase Essentials',
+      title: 'Cubase Beginner',
       level: 'Beginner',
-      duration: '4 weeks',
-      topics: [
-        'Audio interface, driver and project setup',
-        'Project window, tracks, routing and transport controls',
-        'Recording and editing audio safely',
-        'MIDI recording, quantising and virtual instruments',
-        'Basic arrangement and automation',
-        'Exporting a complete first production',
-      ],
-    },
-    {
-      title: 'Vocal & Instrument Recording',
-      level: 'Intermediate',
       duration: '5 weeks',
-      topics: [
-        'Microphone selection and placement',
-        'Gain staging and recording-session preparation',
-        'Cycle recording, comping and take management',
-        'Timing, tuning and detailed audio editing',
-        'Recording guitars, keyboards and live percussion',
-        'Building a professional session template',
-      ],
+      topics: ['Setting up Cubase', 'Creating a project', 'Recording audio', 'MIDI basics', 'Editing audio'],
     },
     {
-      title: 'Cubase Production & Arrangement',
+      title: 'Cubase Music Production',
       level: 'Intermediate',
       duration: '6 weeks',
-      topics: [
-        'Chord tracks, scale tools and harmonic workflow',
-        'Drum programming, groove design and MIDI expression',
-        'Audio manipulation, sampling and creative processing',
-        'Song structure for club and streaming formats',
-        'Automation, transitions and energy control',
-        'Producing and arranging a complete original song',
-      ],
+      topics: ['Arrangement', 'MIDI programming', 'Instrument plugins', 'Automation'],
     },
     {
-      title: 'Cubase Mixing & Final Mixdown',
+      title: 'Cubase Mixing',
       level: 'Advanced',
       duration: '6 weeks',
-      topics: [
-        'MixConsole workflow and channel-strip processing',
-        'Groups, FX channels, sends and parallel processing',
-        'EQ, compression and frequency management',
-        'Vocal placement, depth and stereo imaging',
-        'Mix revisions, referencing and translation testing',
-        'Stems, alternate versions and final mix delivery',
-      ],
+      topics: ['Channel strip', 'Effects', 'Mixing workflow', 'Final mixdown'],
     },
   ],
   reason: [
     {
-      title: 'Reason Rack Foundations',
+      title: 'Reason Beginner',
       level: 'Beginner',
       duration: '4 weeks',
-      topics: [
-        'Rack, sequencer, browser and mixer navigation',
-        'Loading instruments, players and effects',
-        'MIDI recording and pattern creation',
-        'Redrum and Kong drum programming',
-        'Basic cabling, routing and automation',
-        'Completing a first rack-based beat',
-      ],
+      topics: ['Rack interface', 'Devices and instruments', 'MIDI sequencing', 'Creating beats'],
     },
     {
       title: 'Reason Sound Design',
       level: 'Intermediate',
-      duration: '5 weeks',
-      topics: [
-        'Oscillators, filters, envelopes and LFOs',
-        'Designing basses, pads, leads and plucks',
-        'Layering instruments for a distinctive sound',
-        'Drum synthesis and custom percussion',
-        'Sampling and resampling workflows',
-        'Building a reusable personal patch library',
-      ],
-    },
-    {
-      title: 'Creative Rack Routing & Effects',
-      level: 'Advanced',
-      duration: '5 weeks',
-      topics: [
-        'Advanced signal flow and rear-panel cabling',
-        'Combinator design and macro control',
-        'Parallel, serial and multiband processing',
-        'Sidechain, modulation and rhythmic effects',
-        'CV routing and generative movement',
-        'Creating a custom performance rack',
-      ],
-    },
-    {
-      title: 'Reason Production Masterclass',
-      level: 'Advanced',
       duration: '6 weeks',
-      topics: [
-        'Professional production templates and workflow',
-        'Genre-focused groove, harmony and arrangement',
-        'Audio recording and vocal integration',
-        'Mixing inside the Reason console',
-        'Using Reason as a plugin in another DAW',
-        'Completing a polished portfolio release',
-      ],
-    },
-  ],
-  dj: [
-    {
-      title: 'DJ Foundations',
-      level: 'Beginner',
-      duration: '4 weeks',
-      topics: [
-        'DJ equipment, software and signal flow',
-        'Cueing, phrasing, tempo and beatmatching',
-        'EQ control, channel gain and clean transitions',
-        'Music library organisation and preparation',
-        'Basic set structure and track selection',
-        'Recording and reviewing a 20-minute mix',
-      ],
+      topics: ['Synth basics', 'Creating custom sounds', 'Drum machines', 'Effects routing'],
     },
     {
-      title: 'Club Mixing & Set Building',
-      level: 'Intermediate',
-      duration: '5 weeks',
-      topics: [
-        'Long blends, quick cuts and transition selection',
-        'Harmonic mixing and key-aware programming',
-        'Reading a crowd and controlling set energy',
-        'Using loops, hot cues and performance pads',
-        'Preparing opening, supporting and headline sets',
-        'Recording a professional 45-minute promotional mix',
-      ],
-    },
-    {
-      title: 'Advanced DJ Performance',
+      title: 'Reason Advanced Production',
       level: 'Advanced',
       duration: '5 weeks',
-      topics: [
-        'Creative layering, acapellas and live remixing',
-        'Three- and four-deck performance concepts',
-        'Effects used with timing and restraint',
-        'Recovery from technical and performance mistakes',
-        'Booth etiquette, handovers and professional conduct',
-        'Designing a signature performance set',
-      ],
-    },
-    {
-      title: 'DJ Career & Booking Toolkit',
-      level: 'All levels',
-      duration: '4 weeks',
-      topics: [
-        'DJ biography, press photographs and electronic press kit',
-        'Rate cards, quotes, deposits and booking agreements',
-        'Promotional mixes, radio submissions and content planning',
-        'Working with promoters, venues and booking agents',
-        'Technical riders, hospitality riders and event preparation',
-        'Building a practical 90-day booking campaign',
-      ],
+      topics: ['Rack extensions', 'Complex routing', 'Professional workflow'],
     },
   ],
   business: [
     {
-      title: 'South African Music Industry Foundations',
-      level: 'Beginner',
-      duration: '4 weeks',
+      title: 'Music Business Made Simple',
+      level: 'All levels',
       topics: [
-        'How artists, producers, labels, publishers and distributors work together',
-        'Master rights, composition rights and neighbouring rights',
-        'Revenue streams for artists, writers, producers and labels',
-        'Core industry documents and professional terminology',
-        'Building a sustainable independent music career',
-        'Creating a personal music-business action plan',
-      ],
-    },
-    {
-      title: 'Copyright, Splits & Music Contracts',
-      level: 'Intermediate',
-      duration: '4 weeks',
-      topics: [
-        'Copyright ownership and the difference between songs and recordings',
-        'Songwriter, producer, featured-artist and session-musician contributions',
-        'Split sheets, producer agreements and beat licences',
-        'Key clauses in recording, publishing and management agreements',
-        'Negotiation preparation and contract red flags',
-        'Completing a rights-and-splits pack for an original song',
-      ],
-    },
-    {
-      title: 'Royalties, CMOs & Rights Registration',
-      level: 'Intermediate',
-      duration: '5 weeks',
-      topics: [
-        'Performance, mechanical, neighbouring-rights and digital royalties',
-        'The roles of SAMRO, CAPASSO, SAMPRA and RISA',
-        'Writer, publisher, performer and rights-owner registrations',
-        'ISRC, UPC, IPI, ISWC and essential music identifiers',
-        'Royalty statements, matching problems and catalogue audits',
-        'Preparing a complete song-registration checklist',
-      ],
-    },
-    {
-      title: 'Distribution, Metadata & Release Setup',
-      level: 'Intermediate',
-      duration: '4 weeks',
-      topics: [
-        'Choosing a distributor and understanding delivery requirements',
-        'Artist names, titles, versions, credits and contributor metadata',
-        'Artwork, audio, release dates and platform lead times',
-        'Spotify for Artists, Apple Music for Artists and YouTube channels',
-        'Pre-save links, smart links and release quality control',
-        'Building a release-ready metadata and asset folder',
-      ],
-    },
-    {
-      title: 'Artist Branding, Marketing & EPK',
-      level: 'Intermediate',
-      duration: '5 weeks',
-      topics: [
-        'Positioning, audience definition and artist story',
-        'Visual identity, artwork direction and brand consistency',
-        'Biography, press release, one-sheet and electronic press kit',
-        'Content pillars and practical social-media planning',
-        'Playlist, radio, blog and DJ outreach',
-        'Creating a complete campaign-ready artist press kit',
-      ],
-    },
-    {
-      title: 'Independent Release Campaign Lab',
-      level: 'Advanced',
-      duration: '6 weeks',
-      topics: [
-        'Setting campaign goals, budgets and release timelines',
-        'Coordinating audio, artwork, metadata, distribution and rights',
-        'Building pre-release, release-week and post-release campaigns',
-        'Audience growth, advertising basics and fan conversion',
-        'Measuring results using platform analytics',
-        'Launching and reviewing a real single or EP campaign',
+        'Artist basics: music careers and how artists make money',
+        'Copyright basics: song ownership, producer rights and beat licences',
+        'Releasing music: distribution to Spotify, Apple Music and YouTube Music',
+        'Royalties: streaming, performance and producer royalties',
+        'Artist branding: names, artwork and social media promotion',
       ],
     },
   ],
@@ -399,8 +168,8 @@ export function CoursesSection() {
           headingId="courses-heading"
           number="02"
           eyebrow="Curriculum"
-          title="Build real music-industry skills"
-          description="Choose a focused learning track, complete practical projects and develop work you can use in your portfolio, releases, DJ career or music business."
+          title="Master your craft"
+          description="From beginner to professional. Choose a software path, see exactly what you will learn, and build skills you can use on a real track."
         />
 
         <Reveal>
@@ -484,8 +253,8 @@ export function CoursesSection() {
           </div>
         </motion.div>
 
-        <a href="#pricing" className="section-link">
-          Compare membership plans <ArrowRightIcon aria-hidden="true" />
+        <a href="#remote-courses" className="section-link">
+          Explore remote course formats <ArrowRightIcon aria-hidden="true" />
         </a>
       </div>
     </section>

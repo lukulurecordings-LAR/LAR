@@ -11,7 +11,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const services = [
   {
@@ -75,7 +75,7 @@ export function StudioBooking() {
       <div className="page-shell">
         <SectionIntro
           headingId="studio-heading"
-          number="06"
+          number="07"
           eyebrow="Studio"
           title="Book a session"
           description="Professional recording, mixing, mastering and podcast services. Choose a service, tell us when you would like to work, then continue to the booking deposit."

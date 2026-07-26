@@ -9,7 +9,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const services = [
   {
@@ -55,7 +55,7 @@ export function DesignServices() {
       <div className="page-shell">
         <SectionIntro
           headingId="design-heading"
-          number="08"
+          number="09"
           eyebrow="Creative services"
           title="Look as good as you sound"
           description="Professional design and video services for your music brand. Pick the format you need and move directly to secure checkout."
