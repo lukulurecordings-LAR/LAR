@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  MailIcon,
   PhoneIcon,
   MapPinIcon,
   InstagramIcon,
