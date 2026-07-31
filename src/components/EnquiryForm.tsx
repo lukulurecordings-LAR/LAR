@@ -8,7 +8,7 @@ import {
   MailIcon,
   SendIcon,
 } from 'lucide-react';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 type Service = { value: string; label: string };
 type Category = { value: string; label: string; services: Service[] };

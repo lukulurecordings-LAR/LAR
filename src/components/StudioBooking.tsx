@@ -11,7 +11,7 @@ import {
 import { CheckoutButton } from './CheckoutButton';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const services = [
   {

@@ -6,7 +6,7 @@ import {
   Mic2Icon,
   RadioIcon,
 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Reveal } from './Reveal';
 
 const services = [

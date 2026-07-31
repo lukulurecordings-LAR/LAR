@@ -10,7 +10,7 @@ import {
   SlidersHorizontalIcon,
   UsersIcon,
 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
 

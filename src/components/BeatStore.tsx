@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowUpRightIcon, FileAudioIcon, LockKeyholeIcon, ShoppingBagIcon } from 'lucide-react';
 import { CheckoutButton } from './CheckoutButton';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Reveal } from './Reveal';
 import { SectionIntro } from './SectionIntro';
 

@@ -12,7 +12,7 @@ import {
   SendIcon,
   XIcon,
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 
 const routes = [
   {

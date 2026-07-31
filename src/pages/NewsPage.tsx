@@ -8,7 +8,7 @@ import {
   RefreshCwIcon,
   SendIcon,
 } from 'lucide-react';
-import { useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import { DocumentTitle } from '../components/DocumentTitle';
 import { EnquiryForm } from '../components/EnquiryForm';
 import { Footer } from '../components/Footer';

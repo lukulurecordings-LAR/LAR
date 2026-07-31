@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LogInIcon, MenuIcon, XIcon } from 'lucide-react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 
 const NAV_LINKS = [
   { label: 'Remote Courses', to: '/#remote-courses', section: 'learn' },

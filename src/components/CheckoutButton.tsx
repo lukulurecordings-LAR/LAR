@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { AlertCircleIcon, LoaderCircleIcon } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 type CheckoutContext = Record<string, string>;

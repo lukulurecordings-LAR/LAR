@@ -372,7 +372,7 @@ export default {
     if (Buffer.byteLength(rawBody, 'utf8') > MAX_WEBHOOK_BYTES) {
       return reply(413, { error: 'Webhook payload is too large.', code: 'BODY_TOO_LARGE' });
     }
-    const stripe = new Stripe(stripeKey, { apiVersion: '2026-06-24.dahlia', telemetry: false });
+    const stripe = new Stripe(stripeKey, { apiVersion: '2026-07-29.dahlia', telemetry: false });
     let event: Stripe.Event;
     try {
       event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);

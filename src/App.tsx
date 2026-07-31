@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { CheckoutNotice } from './components/CheckoutNotice';
 import { HelpAssistant } from './components/HelpAssistant';
 import { Navbar } from './components/Navbar';

@@ -30,7 +30,7 @@ export default async function handler(request: ApiRequest, response: ApiResponse
   if (!mapping.data[0]) return sendJson(response, 404, { error: 'No billing profile exists for this student yet.', code: 'CUSTOMER_NOT_FOUND' });
 
   try {
-    const stripe = new Stripe(stripeKey, { apiVersion: '2026-06-24.dahlia', telemetry: false });
+    const stripe = new Stripe(stripeKey, { apiVersion: '2026-07-29.dahlia', telemetry: false });
     const session = await stripe.billingPortal.sessions.create({
       customer: mapping.data[0].stripe_customer_id,
       return_url: `${siteUrl}/student/billing`,

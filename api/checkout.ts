@@ -191,7 +191,7 @@ export default async function handler(request: ApiRequest, response: ApiResponse
     return sendJson(response, 200, { url: order.stripe_checkout_url, sessionId: order.stripe_checkout_session_id, orderId: order.id });
   }
 
-  const stripe = new Stripe(stripeKey, { apiVersion: '2026-06-24.dahlia', telemetry: false });
+  const stripe = new Stripe(stripeKey, { apiVersion: '2026-07-29.dahlia', telemetry: false });
   try {
     const customerId = user ? await getOrCreateCustomer(stripe, user) : null;
     const metadata = { order_id: order.id, item_id: item.id, ...(user ? { student_profile_id: user.id } : {}) };

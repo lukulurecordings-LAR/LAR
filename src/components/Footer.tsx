@@ -1,5 +1,5 @@
 import { FileTextIcon, LockKeyholeIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
   return (

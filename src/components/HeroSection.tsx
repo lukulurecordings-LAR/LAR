@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowDownIcon, ArrowUpRightIcon, Disc3Icon } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const stats = [
   { value: '14+', label: 'Courses' },
